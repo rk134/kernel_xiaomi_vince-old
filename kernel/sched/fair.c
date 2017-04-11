@@ -756,17 +756,11 @@ static u64 sched_vslice(struct cfs_rq *cfs_rq, struct sched_entity *se)
 }
 
 #ifdef CONFIG_SMP
+
+#include "sched-pelt.h"
+
 static int select_idle_sibling(struct task_struct *p, int prev_cpu, int cpu);
 static unsigned long task_h_load(struct task_struct *p);
-
-/*
- * We choose a half-life close to 1 scheduling period.
- * Note: The tables runnable_avg_yN_inv and runnable_avg_yN_sum are
- * dependent on this value.
- */
-#define LOAD_AVG_PERIOD 16
-#define LOAD_AVG_MAX 24117 /* maximum possible load avg */
-#define LOAD_AVG_MAX_N 172 /* number of full periods to produce LOAD_AVG_MAX */
 
 /* Give new sched_entity start runnable values to heavy its load in infant time */
 void init_entity_runnable_average(struct sched_entity *se)
@@ -2806,12 +2800,6 @@ EXPORT_SYMBOL(sched_set_wake_up_idle);
 #endif
 
 #ifdef CONFIG_SMP
-/* Precomputed fixed inverse multiplies for multiplication by y^n */
-static const u32 runnable_avg_yN_inv[] = {
-	0xffff, 0xf524, 0xeabf, 0xe0cb, 0xd744, 0xce23, 0xc566, 0xbd07,
-	0xb504, 0xad57, 0xa5fe, 0x9ef4, 0x9837, 0x91c3, 0x8b95, 0x85aa,
-};
-
 /*
  * Precomputed \Sum y^k { 1<=k<=n }.  These are floor(true_value) to prevent
  * over-estimates when re-combining.

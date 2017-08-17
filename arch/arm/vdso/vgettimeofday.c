@@ -132,7 +132,11 @@ static notrace int do_realtime(const struct vdso_data *vd, struct timespec *ts)
 {
 	u32 seq, mult, shift;
 	u64 nsec, cycle_last;
+#ifdef ARCH_CLOCK_FIXED_MASK
+	static const u64 mask = ARCH_CLOCK_FIXED_MASK;
+#else
 	u64 mask;
+#endif
 	vdso_xtime_clock_sec_t sec;
 
 	do {
@@ -145,7 +149,9 @@ static notrace int do_realtime(const struct vdso_data *vd, struct timespec *ts)
 
 		mult = vd->cs_mono_mult;
 		shift = vd->cs_shift;
+#ifndef ARCH_CLOCK_FIXED_MASK
 		mask = vd->cs_mask;
+#endif
 
 		sec = vd->xtime_clock_sec;
 		nsec = vd->xtime_clock_snsec;
@@ -165,7 +171,11 @@ static notrace int do_monotonic(const struct vdso_data *vd, struct timespec *ts)
 {
 	u32 seq, mult, shift;
 	u64 nsec, cycle_last;
+#ifdef ARCH_CLOCK_FIXED_MASK
+	static const u64 mask = ARCH_CLOCK_FIXED_MASK;
+#else
 	u64 mask;
+#endif
 	vdso_wtm_clock_nsec_t wtm_nsec;
 	__kernel_time_t sec;
 
@@ -179,7 +189,9 @@ static notrace int do_monotonic(const struct vdso_data *vd, struct timespec *ts)
 
 		mult = vd->cs_mono_mult;
 		shift = vd->cs_shift;
+#ifndef ARCH_CLOCK_FIXED_MASK
 		mask = vd->cs_mask;
+#endif
 
 		sec = vd->xtime_clock_sec;
 		nsec = vd->xtime_clock_snsec;
@@ -204,7 +216,11 @@ static notrace int do_monotonic_raw(const struct vdso_data *vd,
 {
 	u32 seq, mult, shift;
 	u64 nsec, cycle_last;
+#ifdef ARCH_CLOCK_FIXED_MASK
+	static const u64 mask = ARCH_CLOCK_FIXED_MASK;
+#else
 	u64 mask;
+#endif
 	vdso_raw_time_sec_t sec;
 
 	do {
@@ -217,7 +233,9 @@ static notrace int do_monotonic_raw(const struct vdso_data *vd,
 
 		mult = vd->cs_raw_mult;
 		shift = vd->cs_shift;
+#ifndef ARCH_CLOCK_FIXED_MASK
 		mask = vd->cs_mask;
+#endif
 
 		sec = vd->raw_time_sec;
 		nsec = vd->raw_time_nsec;

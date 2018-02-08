@@ -20,7 +20,6 @@
 #include "sched.h"
 #include "tune.h"
 
-#define SUGOV_KTHREAD_PRIORITY	50
 #define IOWAIT_BOOST_MIN	(SCHED_CAPACITY_SCALE / 8)
 
 struct sugov_tunables {

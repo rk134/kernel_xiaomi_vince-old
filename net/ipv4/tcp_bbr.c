@@ -68,11 +68,7 @@ struct bbr {
 		round_start:1,	     /* start of packet-timed tx->ack round? */
 		idle_restart:1,	     /* restarting after idle? */
 		probe_rtt_round_done:1,  /* a BBR_PROBE_RTT round at 4 pkts? */
-<<<<<<< HEAD
 		unused:13,
-=======
-		unused:12,
->>>>>>> aa06159040a3 (BACKPORT: tcp_bbr: remove bbr->tso_segs_goal)
 		lt_is_sampling:1,    /* taking long-term ("LT") samples now? */
 		lt_rtt_cnt:7,	     /* round trips in long-term interval */
 		lt_use_bw:1;	     /* use lt_bw as our bw estimate? */

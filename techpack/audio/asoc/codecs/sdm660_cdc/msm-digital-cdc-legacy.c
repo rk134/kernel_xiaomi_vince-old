@@ -1335,6 +1335,7 @@ static void sdm660_tx_mute_update_callback(struct work_struct *work)
 		decimator = 0;
 	}
 }
+	
 
 #ifdef CONFIG_SOUND_CONTROL
 struct snd_soc_codec *sound_control_codec_ptr;

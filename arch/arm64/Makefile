@@ -86,11 +86,7 @@ endif
 KBUILD_CFLAGS	+= -mgeneral-regs-only $(lseinstr)
 KBUILD_CFLAGS	+= -fno-asynchronous-unwind-tables
 KBUILD_CFLAGS	+= $(call cc-option, -mpc-relative-literal-loads)
-<<<<<<< HEAD
 KBUILD_CFLAGS	+= $(call cc-disable-warning, psabi)
-=======
-KBUILD_CFLAGS	+= -Wno-psabi
->>>>>>> fd7d3e2c3cfd (BACKPORT: arm64: Silence gcc warnings about arch ABI drift)
 KBUILD_CFLAGS	+= -fno-pic
 KBUILD_AFLAGS	+= $(lseinstr) $(vdso32)
 

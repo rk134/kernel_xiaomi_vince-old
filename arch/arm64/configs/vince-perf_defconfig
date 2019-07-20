@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 4.9.299 Kernel Configuration
+# Linux/arm64 4.9 Kernel Configuration
 #
 CONFIG_ARM64=y
 CONFIG_64BIT=y
@@ -631,7 +631,7 @@ CONFIG_NET_INGRESS=y
 CONFIG_NET_EGRESS=y
 
 #
-# TCP 
+# TCP
 #
 CONFIG_TCP_CONG_ADVANCED=y
 # CONFIG_TCP_CONG_BIC is not set

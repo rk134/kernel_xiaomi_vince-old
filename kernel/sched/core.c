@@ -97,7 +97,6 @@ void su_exit(void)
 	atomic_dec(&__su_instances);
 }
 
-ATOMIC_NOTIFIER_HEAD(load_alert_notifier_head);
 
 DEFINE_MUTEX(sched_domains_mutex);
 DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
@@ -4035,9 +4034,6 @@ void scheduler_tick(void)
 
 	raw_spin_unlock(&rq->lock);
 
-	if (early_notif)
-		atomic_notifier_call_chain(&load_alert_notifier_head,
-					0, (void *)(long)cpu);
 	perf_event_task_tick();
 
 #ifdef CONFIG_SMP

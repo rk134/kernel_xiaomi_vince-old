@@ -201,11 +201,21 @@ static void sugov_get_util(unsigned long *util, unsigned long *max, int cpu)
 	*max = cfs_max;
 
 	*util = boosted_cpu_util(cpu, &loadcpu->walt_load);
-	
+
 #ifdef CONFIG_UCLAMP_TASK
 	*util = uclamp_util_with(rq, *util, NULL);
 	*util = min(*max, *util);
 #endif
+}
+
+if ((use_pelt())) {
+	sched_avg_update(rq);
+	delta = time - rq->age_stamp;
+	if (unlikely(delta < 0))
+		delta = 0;
+	rt = div64_u64(rq->rt_avg, sched_avg_period() + delta);
+	rt = (rt * max_cap) >> SCHED_CAPACITY_SHIFT;
+	*util = min(*util + rt, max_cap);
 }
 
 static void sugov_set_iowait_boost(struct sugov_cpu *sg_cpu, u64 time)
@@ -460,7 +470,7 @@ static void update_min_rate_limit_ns(struct sugov_policy *sg_policy)
 static ssize_t up_rate_limit_us_show(struct gov_attr_set *attr_set, char *buf)
 {
  	struct sugov_tunables *tunables = to_sugov_tunables(attr_set);
- 
+
 	return sprintf(buf, "%u\n", tunables->up_rate_limit_us);
 }
 

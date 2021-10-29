@@ -8872,7 +8872,11 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
 	 */
 	if (!env->src_rq->rd->overutilized &&
 		env->flags & LBF_IGNORE_BIG_TASKS &&
+#ifdef CONFIG_UCLAMP_TASK
+		(uclamp_boosted(p) > 0))
+#else /* CONFIG_CGROUP_SCHEDTUNE */
 		(schedtune_task_boost(p) > 0))
+#endif
 		return 0;
 
 	if (task_running(env->src_rq, p)) {

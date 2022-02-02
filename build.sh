@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2020 StarLight5234
 # Copyright (C) 2021 GhostMaster69-dev
-# Copyright (C) 2022 rk134
+# Copyright (C) 2021 rk134
 
 export DEVICE="VINCE"
 export CONFIG="vince-perf_defconfig"
@@ -13,12 +13,10 @@ export TC_PATH="$HOME/toolchains"
 export ZIP_DIR="$(pwd)/Flasher"
 export IS_MIUI="no"
 export KERNEL_DIR=$(pwd)
-export KBUILD_BUILD_USER="rxhul"
+export KBUILD_BUILD_USER="epyc"
 export GCC_COMPILE="no"
-export AOSPCLANG_COMPILE="yes"
-export KBUILD_BUILD_HOST="rk134"
-export KBUILD_COMPILER_STRING="AOSP's AOSP CLANG"
-export COMPILER="AOSP's AOSP CLANG"
+export KBUILD_BUILD_HOST="Epyc-Lab"
+export KBUILD_COMPILER_STRING="rxhul's epyc-clang version 14.0.0"
 
 #==============================================================
 #===================== Function Definition ====================
@@ -42,14 +40,6 @@ tg_pushzip()
 	curl -F document=@"$FZIP"  "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendDocument" \
 			-F chat_id=$CHANNEL_ID \
 			-F caption="Build Finished after $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds"
-}
-
-# Upload download link to channel
-tg_pushlink()
-{
-        export zip_directory="$(cd $(pwd)/Flasher/ && ls *.zip)"
-        rclone copy $(pwd)/Flasher/*.zip ccache:vince -P
-        curl -s https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage -d chat_id=$CHANNEL_ID -d text="Download link https://retarded-sprout.axsp.workers.dev/vince/$zip_directory"
 }
 
 # Send Updates
@@ -81,23 +71,25 @@ function error_sticker() {
 #======================== & AnyKernel =========================
 #==============================================================
 
-#function clone_tc() {
-#[ -d ${TC_PATH} ] || mkdir ${TC_PATH}
+function clone_tc() {
+[ -d ${TC_PATH} ] || mkdir ${TC_PATH}
 
-#if [ "$GCC_COMPILE" == "no" ]; then
-	#git clone --depth=1 https://github.com/kdrag0n/proton-clang.git ${TC_PATH}/clang
-	#export PATH="${TC_PATH}/clang/bin:$PATH"
-	#export STRIP="${TC_PATH}/clang/aarch64-linux-gnu/bin/strip"
-	#export COMPILER="Clang 14.0.0"
-#else
-	#git clone --depth=1 https://github.com/arter97/arm64-gcc ${TC_PATH}/gcc64
-	#git clone --depth=1 https://github.com/arter97/arm32-gcc ${TC_PATH}/gcc32
-	#export PATH="${TC_PATH}/gcc64/bin:${TC_PATH}/gcc32/bin:$PATH"
-	#export STRIP="${TC_PATH}/gcc64/aarch64-elf/bin/strip"
-	#export COMPILER="Arter97's GCC Compiler" 
-#fi
+if [ "$GCC_COMPILE" == "no" ]; then
+	git clone --depth=1 https://github.com/kdrag0n/proton-clang.git ${TC_PATH}/clang
+	export PATH="${TC_PATH}/clang/bin:$PATH"
+	export STRIP="${TC_PATH}/clang/aarch64-linux-gnu/bin/strip"
+	export COMPILER="Clang 14.0.0"
+else
+	git clone --depth=1 https://github.com/mvaisakh/gcc-arm64.git ${TC_PATH}/gcc64
+	git clone --depth=1 https://github.com/mvaisakh/gcc-arm.git ${TC_PATH}/gcc32
+#	git clone --depth=1 https://github.com/arter97/arm64-gcc ${TC_PATH}/gcc64
+#	git clone --depth=1 https://github.com/arter97/arm32-gcc ${TC_PATH}/gcc32
+	export PATH="${TC_PATH}/gcc64/bin:${TC_PATH}/gcc32/bin:$PATH"
+	export STRIP="${TC_PATH}/gcc64/aarch64-elf/bin/strip"
+	export COMPILER="mvaisakh's EvaGCC" 
+fi
 
-#}
+}
 
 #==============================================================
 #=========================== Make =============================
@@ -109,7 +101,7 @@ DATE=`date`
 BUILD_START=$(date +"%s")
 make O=out ARCH=arm64 "$CONFIG"
 
-if [ "$AOSPCLANG_COMPILE" == "no" ]; then
+if [ "$GCC_COMPILE" == "no" ]; then
 	make -j$(nproc --all) O=out \
 			      ARCH=arm64 \
 			      CC="ccache clang" \
@@ -130,46 +122,11 @@ if [ "$AOSPCLANG_COMPILE" == "no" ]; then
 			      HOSTNM=llvm-nm \
 			      CROSS_COMPILE=aarch64-linux-gnu- \
 			      CROSS_COMPILE_ARM32=arm-linux-gnueabi- |& tee -a $HOME/build/build${BUILD}.txt
-else	
-	cd .. \
-	export PATH="$(pwd)/tools/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin:$PATH" \
-	export PATH="$(pwd)/tools/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin:$PATH" \
-	export PATH="$(pwd)/tools/clang/host/linux-x86/clang-r428724/bin:$PATH" \
-	export LD_LIBRARY_PATH="$(pwd)/tools/clang/host/linux-x86/clang-r428724/lib64:$LD_LIBRARY_PATH" \
-	export ARCH=arm64 \
-	export SUBARCH=ARM64 \
-	export CLANG_TRIPLE=aarch64-linux-gnu- \
-	export CROSS_COMPILE=aarch64-linux-android- \
-	export CROSS_COMPILE_ARM32=arm-linux-androideabi- \
-	make \
-		O=out \
-		clean \
-		mrproper \
-		CC="ccache clang" \
-		AR=llvm-ar \
-		NM=llvm-nm \
-		OBJCOPY=llvm-objcopy \
-		OBJDUMP=llvm-objdump \
-		READELF=llvm-readelf \
-		OBJSIZE=llvm-size \
-		STRIP=llvm-strip \
-		HOSTCC=clang \
-		HOSTCXX=clang++ \
-		vince-perf_defconfig
-	&&
-	make \
-		O=out \
-		CC="ccache clang" \
-		AR=llvm-ar \
-		NM=llvm-nm \
-		OBJCOPY=llvm-objcopy \
-		OBJDUMP=llvm-objdump \
-		READELF=llvm-readelf \
-		OBJSIZE=llvm-size \
-		STRIP=llvm-strip \
-		HOSTCC=clang \
-		HOSTCXX=clang++ \
-		-j$(nproc --all) -flto=thin -O3 -march=native -mtune=native -pipe |& tee -a $HOME/build/build${BUILD}.txt
+else
+	make -j$(nproc --all) O=out \
+			      ARCH=arm64 \
+			      CROSS_COMPILE=aarch64-elf- \
+			      CROSS_COMPILE_ARM32=arm-eabi- |& tee -a $HOME/build/build${BUILD}.txt
 fi
 
 BUILD_END=$(date +"%s")
@@ -254,7 +211,7 @@ fi
 #======================= definition ===========================
 #==============================================================
 
-#clone_tc
+clone_tc
 
 COMMIT=$(git log --pretty=format:'"%h : %s"' -1)
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
@@ -285,5 +242,4 @@ if ! [ -a "$KERN_IMG" ]; then
 	exit 1
 else
 	make_flashable
-	tg_pushlink
 fi

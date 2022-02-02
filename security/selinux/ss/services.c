@@ -70,9 +70,7 @@
 #include "ebitmap.h"
 #include "audit.h"
 
-<<<<<<< HEAD
 int selinux_android_netlink_getneigh;
-=======
 /* Policy capability names */
 const char *selinux_policycap_names[__POLICYDB_CAPABILITY_MAX] = {
 	"network_peer_controls",
@@ -83,7 +81,6 @@ const char *selinux_policycap_names[__POLICYDB_CAPABILITY_MAX] = {
 	"nnp_nosuid_transition"
 };
 
->>>>>>> ac2b5e7b35d3 (BACKPORT: selinux: log policy capability state when a policy is loaded)
 int selinux_policycap_netpeer;
 int selinux_policycap_openperm;
 int selinux_policycap_alwaysnetwork;

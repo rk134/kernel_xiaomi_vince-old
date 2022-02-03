@@ -126,3 +126,6 @@ Android.bp
 
 # Ignore out dir
 out/
+
+# Ignore flasher dir
+Flasher/

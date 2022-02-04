@@ -1,4 +1,4 @@
-NAME ?= ThreadRipperKernel-NON-OC
+NAME ?= ElementalKernel
 DATE := $(shell date "+%d%m%Y-%I%M")
 
 VERSION := $(shell cat ../Makefile | grep VERSION | head -n 1 | sed "s|.*=||1" | sed "s| ||g")
@@ -9,7 +9,7 @@ SZIP := $(NAME)-$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)-STABLE-$(DATE).zip
 BZIP := $(NAME)-$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)-BETA-$(DATE).zip
 TZIP := $(NAME)-$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)-TEST-$(DATE).zip
 
-EXCLUDE := Makefile *.git* *.jar* Retard* *placeholder* README.md
+EXCLUDE := Makefile *.git* *.jar* Elemental* *placeholder* README.md
 
 stable: $(SZIP)
 beta: $(BZIP)

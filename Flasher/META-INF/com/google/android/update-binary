@@ -469,24 +469,22 @@ if [ -f version ]; then
   ui_printfile version;
   ui_print " ";
 fi;
-ui_print "=============================================";
-ui_print "|       ______ _______     _______          |";
-ui_print "|      |  ____|  __ \ \   / / ____|         |";
-ui_print "|      | |__  | |__) \ \_/ / |              |";
-ui_print "|      |  __| |  ___/ \   /| |              |";
-ui_print "|      | |____| |      | | | |____          |";
-ui_print "|      |______|_|      |_|  \_____|         |";
-ui_print "|===========================================|";
-ui_print "|  Kernel         : Threadripper-Kernel     |";
-ui_print "|  Device         : Redmi 5 Plus            |";
-ui_print "|  Linux version  : 4.9.y                   |";
-ui_print "|  Compiler       : Proton Clang 14.0.0     |";
-ui_print "|  Maintainer     : rk134                   |";
-ui_print "|===========================================|";
-ui_print "| AnyKernel3 by osm0sis @xda-developers.    |";
-ui_print "=============================================";
-
-
+ui_print "|==================================================|";
+‌‌‎ui_print "|  EEEE L    EEEE M   M EEEE N   N TTTTTT  AA  L   |";
+‌‌‎ui_print "|  E    L    E    MM MM E    NN  N   TT   A  A L   |";
+‌‌‎ui_print "|  EEE  L    EEE  M M M EEE  N N N   TT   AAAA L   |"; 
+‌‌‎ui_print "|  E    L    E    M   M E    N  NN   TT   A  A L   |";
+‌‌‎ui_print "|  EEEE LLL  EEEE M   M EEEE N   N   TT   A  A LLL |";
+ui_print "|==================================================|";
+ui_print "|  Kernel         : ElementalKernel                |";
+ui_print "|  Version        : v1.0-Carbon                    |";
+ui_print "|  Device         : Redmi 5 Plus                   |";
+ui_print "|  Linux version  : 4.9.y                          |";
+ui_print "|  Compiler       : Proton Clang 14.0.0            |";
+ui_print "|  Maintainer     : rk134                          |";
+ui_print "|==================================================|";
+ui_print "| AnyKernel3 by osm0sis @xda-developers.           |";
+ui_print "|==================================================|";
 
 setup_env;
 
@@ -494,7 +492,7 @@ do_devicecheck;
 do_versioncheck;
 do_levelcheck;
 
-ui_print "Hold on, we getting epyc!";
+ui_print "Hold on, we adding carbon!";
 CORE=$($BB grep -oE 'ak.*core.sh' anykernel.sh);
 [ -f tools/$CORE ] || $BB ln -s $AKHOME/tools/ak*-core.sh $AKHOME/tools/$CORE;
 PATH="$AKHOME/bin:$PATH" home=$AKHOME $BB ash anykernel.sh $2;
@@ -517,7 +515,6 @@ ui_print "|        \  /      /  \      \  /        |";
 ui_print "|         ||      /----\      ||         |";
 ui_print "|         ||     /      \     ||         |";
 ui_print "|========================================|";
-ui_print "| Threadripper installed Successfully.   |";
-ui_print "| Thanks to GhostMaster69-dev for kernel!|";
+ui_print "| Elemental installed Successfully.      |";
 ui_print "==========================================";
 

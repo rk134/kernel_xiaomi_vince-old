@@ -702,8 +702,12 @@ KBUILD_CFLAGS	+= $(call cc-option,-ffunction-sections,)
 KBUILD_CFLAGS	+= $(call cc-option,-fdata-sections,)
 endif
 
-ifdef CONFIG_LTO_CLANG
-lto-clang-flags	:= -flto -fvisibility=hidden
+ifdef CONFIG_THINLTO
+lto-clang-flags := -flto=thin
+else
+lto-clang-flags := -flto -fvisibility=hidden
+endif
+lto-clang-flags += -fvisibility=default $(call cc-option, -fsplit-lto-unit)
 
 # allow disabling only clang LTO where needed
 DISABLE_LTO_CLANG := -fno-lto -fvisibility=default
@@ -826,13 +830,15 @@ KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
 # See modpost pattern 2
 KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
 KBUILD_CFLAGS += $(call cc-option, -fcatch-undefined-behavior)
-KBUILD_CFLAGS += $(call cc-option, -mllvm -polly) \
-		 $(call cc-option, -mllvm -polly-run-dce) \
-		 $(call cc-option, -mllvm -polly-run-inliner) \
-		 $(call cc-option, -mllvm -polly-opt-fusion=max) \
-		 $(call cc-option, -mllvm -polly-ast-use-context) \
-		 $(call cc-option, -mllvm -polly-detect-keep-going) \
-		 $(call cc-option, -mllvm -polly-vectorizer=stripmine)
+ifdef CONFIG_LLVM_POLLY
+KBUILD_CFLAGS	+= -mllvm -polly \
+		   -mllvm -polly-run-dce \
+		   -mllvm -polly-run-inliner \
+		   -mllvm -polly-opt-fusion=max \
+		   -mllvm -polly-ast-use-context \
+		   -mllvm -polly-detect-keep-going \
+		   -mllvm -polly-vectorizer=stripmine \
+		   -mllvm -polly-invariant-load-hoisting
 endif
 
 # These warnings generated too much noise in a regular build.

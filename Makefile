@@ -852,7 +852,7 @@ KBUILD_CFLAGS += $(call cc-option, -mllvm -polly) \
 		 $(call cc-option, -mllvm -polly-ast-use-context) \
 		 $(call cc-option, -mllvm -polly-detect-keep-going) \
 		 $(call cc-option, -mllvm -polly-vectorizer=stripmine)
-else
+endif
 
 # These warnings generated too much noise in a regular build.
 # Use make W=1 to enable them (see scripts/Makefile.extrawarn)

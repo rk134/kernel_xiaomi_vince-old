@@ -34,6 +34,14 @@ tg_pushzip()
 			-F caption="Build Finished after $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds"
 }
 
+# Upload download link to channel
+tg_pushlink()
+{
+        export zip_directory="$(cd $(pwd)/Flasher/ && ls *.zip)"
+        rclone copy $(pwd)/Flasher/*.zip ccache:vince -P
+        curl -s https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage -d chat_id=$CHANNEL_ID -d text="Download link https://retarded-sprout.axsp.workers.dev/vince/$zip_directory"
+}
+
 # Send Updates
 function tg_sendinfo() {
 	curl -s "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" \
@@ -152,4 +160,5 @@ if ! [ -a "$KERN_IMG" ]; then
 	exit 1
 else
 	make_flashable
+	tg_pushlink
 fi

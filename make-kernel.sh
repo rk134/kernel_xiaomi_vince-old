@@ -6,10 +6,11 @@ export DEVICE="VINCE"
 export CONFIG="vince-perf_defconfig"
 export TC_PATH="$HOME/toolchains"
 PATH="${PWD}/clang/bin:$PATH"
+PATH="${PWD}/los-4.9-32/bin:$PATH"
+PATH="${PWD}/los-4.9-64/bin:$PATH"
 export ZIP_DIR="$(pwd)/Flasher"
 export KERNEL_DIR=$(pwd)
 export AZURE_COMPILE="yes"
-export KBUILD_BUILD_HOST="Elemental-Local"
 export KBUILD_BUILD_USER="rk134"
 export KBUILD_COMPILER_STRING="$(${KERNEL_DIR}/clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
 
@@ -27,6 +28,20 @@ if [[ -z ${TELEGRAM_TOKEN} ]]; then
     echo -n "Please give me your telegram bot token: "
     read -r tg_token
     TELEGRAM_TOKEN="${tg_token}"
+fi
+
+# Ask type of host for building
+if [[ -z ${HOST} ]]; then
+	echo -n "Please enter the hostname: "
+	read -r HOST
+	KBUILD_BUILD_HOST="${HOST}"
+fi
+
+# Ask type of build for building
+if [[ -z ${TYPE} ]]; then
+	echo -n "Please enter the type of build: "
+	read -r TYPE
+	TYPE="${TYPE}"
 fi
 
 # Upload buildlog to group
@@ -109,7 +124,7 @@ BUILD_START=$(date +"%s")
 make O=out ARCH=arm64 vince-perf_defconfig
 make -j$(nproc --all) O=out \
                 ARCH=arm64 \
-			    CC="ccache clang" \
+			    CC=clang \
 			    CROSS_COMPILE=aarch64-linux-gnu- \
 			    CROSS_COMPILE_ARM32=arm-linux-gnueabi- |& tee -a $HOME/build/build${BUILD}.txt
 
@@ -177,8 +192,8 @@ tg_sendinfo "$(echo -e "======= <b>$DEVICE</b> =======\n
 Build-Host   :- <code>$KBUILD_BUILD_HOST</code>
 Build-User   :- <code>$KBUILD_BUILD_USER</code>\n 
 Version      :- <u><code>$KERN_VER</code></u>
-Compiler     :- <code>$COMPILER</code>\n
-on Branch    :- <code>$KBUILD_COMPILER_STRING</code>
+Compiler     :- <code>$KBUILD_COMPILER_STRING</code>\n
+on Branch    :- <code>$BRANCH</code>
 Commit       :- <code>$COMMIT</code>\n
 Type         :- <code>$TYPE</code>\n")"
 

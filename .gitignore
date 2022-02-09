@@ -129,3 +129,8 @@ out/
 
 # Ignore flasher dir
 Flasher/
+
+# Ignore toolchain dirs
+clang/
+los-4.9-32/
+los-4.9-64/

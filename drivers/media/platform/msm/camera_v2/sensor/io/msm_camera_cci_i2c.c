@@ -61,12 +61,9 @@ int32_t msm_camera_cci_i2c_read_seq(struct msm_camera_i2c_client *client,
 	uint32_t addr, uint8_t *data, uint32_t num_byte)
 {
 	int32_t rc = -EFAULT;
-<<<<<<< HEAD
 	unsigned char buf_onstack[SZ_1K];
 	unsigned char *buf = NULL;
 	int i;
-=======
->>>>>>> 47727b093c471... msm: camera: Optimize memory allocation for small buffers
 	struct msm_camera_cci_ctrl cci_ctrl;
 
 	if ((client->addr_type != MSM_CAMERA_I2C_BYTE_ADDR
@@ -81,7 +78,6 @@ int32_t msm_camera_cci_i2c_read_seq(struct msm_camera_i2c_client *client,
 		return rc;
 	}
 
-<<<<<<< HEAD
 	if (num_byte <= sizeof(buf_onstack)) {
 		buf = buf_onstack;
 		memset(buf, 0, num_byte);
@@ -92,8 +88,6 @@ int32_t msm_camera_cci_i2c_read_seq(struct msm_camera_i2c_client *client,
 			return -ENOMEM;
 		}
 	}
-=======
->>>>>>> 47727b093c471... msm: camera: Optimize memory allocation for small buffers
 	cci_ctrl.cmd = MSM_CCI_I2C_READ;
 	cci_ctrl.cci_info = client->cci_client;
 	cci_ctrl.cfg.cci_i2c_read_cfg.addr = addr;
@@ -107,7 +101,6 @@ int32_t msm_camera_cci_i2c_read_seq(struct msm_camera_i2c_client *client,
 	rc = cci_ctrl.status;
 
 	S_I2C_DBG("%s addr = 0x%x", __func__, addr);
-<<<<<<< HEAD
 	for (i = 0; i < num_byte; i++) {
 		data[i] = buf[i];
 		S_I2C_DBG("Byte %d: 0x%x\n", i, buf[i]);
@@ -115,8 +108,6 @@ int32_t msm_camera_cci_i2c_read_seq(struct msm_camera_i2c_client *client,
 	}
 	if (buf != buf_onstack)
 		kfree(buf);
-=======
->>>>>>> 47727b093c471... msm: camera: Optimize memory allocation for small buffers
 	return rc;
 }
 
@@ -163,11 +154,7 @@ int32_t msm_camera_cci_i2c_write_seq(struct msm_camera_i2c_client *client,
 	struct msm_camera_cci_ctrl cci_ctrl;
 	struct msm_camera_i2c_reg_array *reg_conf_tbl = NULL;
 	struct msm_camera_i2c_reg_array reg_tbl_onstack[
-<<<<<<< HEAD
-		SZ_1K / sizeof(struct msm_camera_i2c_reg_array)];
-=======
 		SZ_4K / sizeof(struct msm_camera_i2c_reg_array)];
->>>>>>> 47727b093c471... msm: camera: Optimize memory allocation for small buffers
 
 	if ((client->addr_type != MSM_CAMERA_I2C_BYTE_ADDR
 		&& client->addr_type != MSM_CAMERA_I2C_WORD_ADDR)
@@ -185,14 +172,9 @@ int32_t msm_camera_cci_i2c_write_seq(struct msm_camera_i2c_client *client,
 
 	if (num_byte <= ARRAY_SIZE(reg_tbl_onstack)) {
 		reg_conf_tbl = reg_tbl_onstack;
-<<<<<<< HEAD
 		memset(reg_conf_tbl, 0, num_byte * sizeof(*reg_conf_tbl));
 	} else {
-		reg_conf_tbl = kzalloc(num_byte *
-=======
-	} else {
 		reg_conf_tbl = kmalloc(num_byte *
->>>>>>> 47727b093c471... msm: camera: Optimize memory allocation for small buffers
 			(sizeof(struct msm_camera_i2c_reg_array)), GFP_KERNEL);
 		if (!reg_conf_tbl) {
 			pr_err("%s:%d no memory\n", __func__, __LINE__);
